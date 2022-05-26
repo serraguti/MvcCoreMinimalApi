@@ -1,0 +1,56 @@
+﻿@model IEnumerable<MvcCoreMinimalApi.Models.Serie>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Series</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Imagen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Puntuacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Anyo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                <img src="@item.Imagen"
+                style="width: 250px; height: 250px"/>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Puntuacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Anyo)
+            </td>
+            <td>
+               <a asp-controller="Series"
+                asp-action="BuscarPersonajeSerie"
+                asp-route-idserie="@item.IdSerie">
+                    Personajes
+                </a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
