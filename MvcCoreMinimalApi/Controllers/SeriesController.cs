@@ -25,6 +25,7 @@ namespace MvcCoreMinimalApi.Controllers
             return View();
         }
 
+        [HttpPost]
         public async Task<IActionResult> Create(Serie serie)
         {
             await this.service.AddSerieAsync(serie);

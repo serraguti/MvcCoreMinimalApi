@@ -38,6 +38,35 @@ namespace MvcCoreMinimalApi.Services
             }
         }
 
+        private async Task<T> CallGetSecureApiAsync<T>
+            (string request, string username, string password)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApi);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.Header);
+                //DEBEMOS INCLUIR LAS CREDENCIALES EN LA CABECERA Authorization
+                string credentials = username + ":" + password;
+                //CONVERTIMOS LAS CREDENCIALES A BYTES
+                byte[] credentialBytes = Encoding.UTF8.GetBytes(credentials);
+                string token = Convert.ToBase64String(credentialBytes);
+                //AÑADIMOS LAS CREDENCIALES EN EL REQUEST
+                client.DefaultRequestHeaders.Add("Authorization", "Basic " + token);
+                HttpResponseMessage response =
+                    await client.GetAsync(request);
+                if (response.IsSuccessStatusCode)
+                {
+                    T data = await response.Content.ReadAsAsync<T>();
+                    return data;
+                }
+                else
+                {
+                    return default(T);
+                }
+            }
+        }
+
         private async Task CallPostAsync<T>(string request, T data)
         {
             using (HttpClient client = new HttpClient())
@@ -54,17 +83,18 @@ namespace MvcCoreMinimalApi.Services
             }
         }
 
-        public async Task<List<Personaje>> GetPersonajesAsync()
+        public async Task<List<Personaje>> GetPersonajesAsync
+            (string username, string password)
         {
             string request = "/personajes";
             List<Personaje> personajes =
-                await this.CallGetApiAsync<List<Personaje>>(request);
+                await this.CallGetSecureApiAsync<List<Personaje>>(request, username, password);
             return personajes;
         }
 
         public async Task<List<Personaje>> FindPersonajesSerieAsync(int idserie)
         {
-            string request = "/personajes/serie/idserie";
+            string request = "/personajes/serie/" + idserie;
             List<Personaje> personajes =
                 await this.CallGetApiAsync<List<Personaje>>(request);
             return personajes;

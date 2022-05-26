@@ -13,10 +13,16 @@ namespace MvcCoreMinimalApi.Controllers
             this.service = service;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(string username, string password)
         {
             List<Personaje> personajes =
-                await this.service.GetPersonajesAsync();
+                await this.service.GetPersonajesAsync(username, password);
             return View(personajes);
         }
 
